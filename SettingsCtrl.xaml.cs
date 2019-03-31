@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -12,6 +13,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using Path = System.IO.Path;
 
 namespace NoteCountRender
 {
@@ -21,6 +23,8 @@ namespace NoteCountRender
     public partial class SettingsCtrl : UserControl
     {
         Settings settings;
+
+        string defText = "Notes: {nc} / {tn}\nBPM: {bpm}\nNPS: {nps}\nPPQ: {ppq}\nPolyphony: {plph}\nSeconds: {seconds}\nTime: {time}\nTicks: {ticks}";
 
         bool initialised = false;
         public SettingsCtrl(Settings settings) : base()
@@ -60,6 +64,7 @@ namespace NoteCountRender
             fontSize.Value = settings.fontSize;
             textTemplate.Text = settings.text;
             initialised = true;
+            Reload();
         }
 
         private void AlignSelect_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -84,6 +89,51 @@ namespace NoteCountRender
         {
             if (!initialised) return;
             settings.text = textTemplate.Text;
+        }
+
+        List<string> templateStrings = new List<string>();
+        void Reload()
+        {
+            if (!Directory.Exists("Plugins/Assets/NoteCounter/Templates"))
+            {
+                Directory.CreateDirectory("Plugins/Assets/NoteCounter/Templates");
+            }
+            try
+            {
+                File.WriteAllText("Plugins/Assets/NoteCounter/Templates/full.txt", defText);
+            }
+            catch { }
+            var files = Directory.GetFiles("Plugins/Assets/NoteCounter/Templates").Where(f => f.EndsWith(".txt"));
+            templateStrings.Clear();
+            templates.Items.Clear();
+            foreach(var f in files)
+            {
+                string text = File.ReadAllText(f);
+                templateStrings.Add(text);
+                templates.Items.Add(new ComboBoxItem() { Content = Path.GetFileNameWithoutExtension(f) });
+            }
+            foreach(var i in templates.Items)
+            {
+                if((string)((ComboBoxItem)i).Content == "full")
+                {
+                    templates.SelectedItem = i;
+                    break;
+                }
+            }
+        }
+
+        private void Templates_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            try
+            {
+                textTemplate.Text = templateStrings[templates.SelectedIndex];
+            }
+            catch { }
+        }
+
+        private void Reload_Click(object sender, RoutedEventArgs e)
+        {
+            Reload();
         }
     }
 }

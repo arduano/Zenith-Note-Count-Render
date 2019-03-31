@@ -47,7 +47,7 @@ namespace NoteCountRender
 
         public double LastMidiTimePerTick { get; set; } = 500000 / 96.0;
 
-        public MidiFile CurrentMidi { get; set; }
+        public MidiInfo CurrentMidi { get; set; }
 
         public double NoteScreenTime => 1 / LastMidiTimePerTick * (1000000.0 / renderSettings.fps);
 
@@ -141,8 +141,8 @@ namespace NoteCountRender
                         if (n.start > midiTime) break;
                     }
                 LastNoteCount = nc;
-                int frame = renderSettings.fps / 4;
-                nps = (nps * frame + currentNotes * frame) / (frame + 1);
+                int frame = renderSettings.fps;
+                nps = (nps * frame + currentNotes * renderSettings.fps) / (frame + 1);
             }
 
             double tempo = LastMidiTimePerTick * CurrentMidi.division;
@@ -159,6 +159,7 @@ namespace NoteCountRender
             text = text.Replace("{ppq}", CurrentMidi.division.ToString());
             text = text.Replace("{nps}", nps.ToString("#,##0"));
             text = text.Replace("{plph}", polyphony.ToString("#,##0"));
+            //text = text.Replace("{sus}", (polyphony / nps * 100).ToString("#,##0.0"));
             text = text.Replace("{seconds}", ((double)frames / renderSettings.fps).ToString("#,##0.0"));
             text = text.Replace("{time}", time.ToString("mm\\:ss"));
             text = text.Replace("{ticks}", ((int)midiTime).ToString("#,##0"));
@@ -270,7 +271,7 @@ namespace NoteCountRender
             //textEngine.Render(text, transform, Color4.White);
         }
 
-        public void SetTrackColors(Color4[][] trakcs)
+        public void SetTrackColors(NoteColor[][] trakcs)
         {
 
         }
