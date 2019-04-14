@@ -80,6 +80,7 @@ namespace NoteCountRender
             noteCount = 0;
             nps = 0;
             frames = 0;
+            notesHit = new LinkedList<long>();
             Initialized = true;
             Console.WriteLine("Initialised FlatRender");
         }
@@ -97,6 +98,8 @@ namespace NoteCountRender
         int frames = 0;
         long currentNotes = 0;
         long polyphony = 0;
+
+        LinkedList<long> notesHit = new LinkedList<long>();
 
         public void RenderFrame(FastList<Note> notes, double midiTime, int finalCompositeBuff)
         {
@@ -141,8 +144,9 @@ namespace NoteCountRender
                         if (n.start > midiTime) break;
                     }
                 LastNoteCount = nc;
-                int frame = renderSettings.fps;
-                nps = (nps * frame + currentNotes * renderSettings.fps) / (frame + 1);
+                notesHit.AddLast(currentNotes);
+                while (notesHit.Count > renderSettings.fps / 4) notesHit.RemoveFirst();
+                nps = notesHit.Sum() * 4;
             }
 
             double tempo = LastMidiTimePerTick * CurrentMidi.division;
