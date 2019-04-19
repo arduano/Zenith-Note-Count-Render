@@ -35,7 +35,7 @@
         <TextBox AcceptsReturn="True" x:Name="textTemplate" Margin="10,103,10,10" TextWrapping="Wrap" Text="TextBox" TextChanged="TextTemplate_TextChanged"/>
         <DockPanel HorizontalAlignment="Left" LastChildFill="False" Margin="10,72,0,0" VerticalAlignment="Top">
             <ComboBox x:Name="templates" DockPanel.Dock="Left" VerticalAlignment="Top" Width="120" Height="26" SelectionChanged="Templates_SelectionChanged"/>
-            <Button x:Name="reload" Content="{DynamicResource reload}" HorizontalAlignment="Left" VerticalAlignment="Top" Width="75" DockPanel.Dock="Left" Height="26" Margin="5,0,0,0" Click="Reload_Click"/>
+            <Button x:Name="reload" Content="{DynamicResource reload}" HorizontalAlignment="Left" VerticalAlignment="Top" Padding="10,0,10,0" DockPanel.Dock="Left" Height="26" Margin="5,0,0,0" Click="Reload_Click"/>
             <Label Content="{DynamicResource noteTextPath}" HorizontalAlignment="Left" VerticalAlignment="Top" DockPanel.Dock="Left" Margin="5,0,0,0"/>
         </DockPanel>
     </Grid>
