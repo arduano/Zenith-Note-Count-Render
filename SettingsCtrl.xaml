@@ -38,5 +38,6 @@
             <Button x:Name="reload" Content="{DynamicResource reload}" HorizontalAlignment="Left" VerticalAlignment="Top" Padding="10,0,10,0" DockPanel.Dock="Left" Height="26" Margin="5,0,0,0" Click="Reload_Click"/>
             <Label Content="{DynamicResource noteTextPath}" HorizontalAlignment="Left" VerticalAlignment="Top" DockPanel.Dock="Left" Margin="5,0,0,0"/>
         </DockPanel>
+        <ComboBox x:Name="fontStyle" HorizontalAlignment="Left" Margin="336,10,0,0" VerticalAlignment="Top" Width="120" Height="26" SelectionChanged="FontStyle_SelectionChanged"/>
     </Grid>
 </UserControl>

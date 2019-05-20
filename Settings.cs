@@ -22,5 +22,6 @@ namespace NoteCountRender
 
         public int fontSize = 40;
         public string fontName = "Arial";
+        public System.Drawing.FontStyle fontStyle = System.Drawing.FontStyle.Regular;
     }
 }

@@ -14,6 +14,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using Path = System.IO.Path;
+using FontStyle = System.Drawing.FontStyle;
 
 namespace NoteCountRender
 {
@@ -24,9 +25,33 @@ namespace NoteCountRender
     {
         Settings settings;
 
-        string defText = "Notes: {nc} / {tn}\nBPM: {bpm}\nNPS: {nps}\nPPQ: {ppq}\nPolyphony: {plph}\nSeconds: {seconds}\nTime: {time}\nTicks: {ticks}";
+        string defText = @"Notes: {nc} / {tn}
+BPM: {bpm}
+NPS: {nps}
+PPQ: {ppq}
+Polyphony: {plph}
+Time: {currtime}";
+        string fullText = @"Notes: {nc} / {tn} / {nr}
+BPM: {bpm}
+NPS: {nps}
+Polyphony: {plph}
+Seconds: {currsec} / {totalsec} / {remsec}
+Time: {currtime} / {totaltime} / {remtime}
+Ticks: {currticks} / {totalticks} / {remticks}
+Bars: {currbars} / {totalbars} / {rembars}
+PPQ: {ppq}
+Time Signature: {tsn}/{tsd}
+Average NPS: {avgnps}";
 
         bool initialised = false;
+
+        Dictionary<FontStyle, string> fontStyles = new Dictionary<FontStyle, string>() {
+            { System.Drawing.FontStyle.Regular, "Regular" },
+            { System.Drawing.FontStyle.Bold, "Bold" },
+            { System.Drawing.FontStyle.Italic, "Italic" },
+            { System.Drawing.FontStyle.Bold | System.Drawing.FontStyle.Italic, "Bold Italic" },
+        };
+
         public SettingsCtrl(Settings settings) : base()
         {
             this.settings = settings;
@@ -53,9 +78,9 @@ namespace NoteCountRender
                 item.Tag = font.Name;
                 fontSelect.Items.Add(item);
             }
-            foreach(var i in fontSelect.Items)
+            foreach (var i in fontSelect.Items)
             {
-                if((string)((ComboBoxItem)i).Tag == settings.fontName)
+                if ((string)((ComboBoxItem)i).Tag == settings.fontName)
                 {
                     fontSelect.SelectedItem = i;
                     break;
@@ -64,6 +89,7 @@ namespace NoteCountRender
             fontSize.Value = settings.fontSize;
             textTemplate.Text = settings.text;
             initialised = true;
+            UpdateFontStyles();
             Reload();
         }
 
@@ -83,6 +109,33 @@ namespace NoteCountRender
         {
             if (!initialised) return;
             settings.fontName = (string)((ComboBoxItem)fontSelect.SelectedItem).Tag;
+            UpdateFontStyles();
+        }
+
+        void UpdateFontStyles()
+        {
+            fontStyle.Items.Clear();
+            using (var font = new System.Drawing.FontFamily(settings.fontName))
+            {
+                foreach (var k in fontStyles.Keys)
+                {
+                    if (font.IsStyleAvailable(k))
+                    {
+                        fontStyle.Items.Add(new ComboBoxItem() { Content = fontStyles[k] });
+                    }
+                }
+            }
+            fontStyle.SelectedIndex = 0;
+        }
+
+        private void FontStyle_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (!initialised) return;
+            try
+            {
+                settings.fontStyle = fontStyles.ToDictionary(kp => kp.Value, kp => kp.Key)[(string)((ComboBoxItem)fontStyle.SelectedItem).Content];
+            }
+            catch { }
         }
 
         private void TextTemplate_TextChanged(object sender, TextChangedEventArgs e)
@@ -100,21 +153,26 @@ namespace NoteCountRender
             }
             try
             {
-                File.WriteAllText("Plugins/Assets/NoteCounter/Templates/full.txt", defText);
+                File.WriteAllText("Plugins/Assets/NoteCounter/Templates/default.txt", defText);
+            }
+            catch { }
+            try
+            {
+                File.WriteAllText("Plugins/Assets/NoteCounter/Templates/full.txt", fullText);
             }
             catch { }
             var files = Directory.GetFiles("Plugins/Assets/NoteCounter/Templates").Where(f => f.EndsWith(".txt"));
             templateStrings.Clear();
             templates.Items.Clear();
-            foreach(var f in files)
+            foreach (var f in files)
             {
                 string text = File.ReadAllText(f);
                 templateStrings.Add(text);
                 templates.Items.Add(new ComboBoxItem() { Content = Path.GetFileNameWithoutExtension(f) });
             }
-            foreach(var i in templates.Items)
+            foreach (var i in templates.Items)
             {
-                if((string)((ComboBoxItem)i).Content == "full")
+                if ((string)((ComboBoxItem)i).Content == "default")
                 {
                     templates.SelectedItem = i;
                     break;
