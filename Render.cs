@@ -118,7 +118,7 @@ namespace NoteCountRender
                 fontStyle = settings.fontStyle;
                 textEngine.SetFont(font, fontStyle, fontSize);
             }
-            if (!renderSettings.paused)
+            if (!renderSettings.Paused)
             {
                 polyphony = 0;
                 currentNotes = 0;
@@ -159,7 +159,7 @@ namespace NoteCountRender
             int totalsec = (int)Math.Floor(CurrentMidi.secondsLength);
             TimeSpan time = new TimeSpan(0, 0, seconds);
             TimeSpan totaltime = new TimeSpan(0, 0, totalsec);
-            if (!renderSettings.paused) frames++;
+            if (!renderSettings.Paused) frames++;
 
             double barDivide = (double)CurrentMidi.division * CurrentMidi.timeSig.numerator / CurrentMidi.timeSig.denominator * 4;
 
