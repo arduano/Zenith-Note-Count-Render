@@ -45,11 +45,13 @@ namespace NoteCountRender
 
         public int NoteCollectorOffset => 0;
 
-        public double LastMidiTimePerTick { get; set; } = 500000 / 96.0;
+        public double Tempo { get; set; }
+
+        public NoteColor[][] NoteColors { get; set; }
 
         public MidiInfo CurrentMidi { get; set; }
 
-        public double NoteScreenTime => 1 / LastMidiTimePerTick * (1000000.0 / renderSettings.fps);
+        public double NoteScreenTime => 0;
 
         public long LastNoteCount { get; set; } = 0;
 
@@ -152,8 +154,7 @@ namespace NoteCountRender
                 nps = notesHit.Sum();
             }
 
-            double tempo = LastMidiTimePerTick * CurrentMidi.division;
-            tempo = (1 / tempo) * 1000000 * 60;
+            double tempo = Tempo;
 
             int seconds = (int)Math.Floor((double)frames / renderSettings.fps);
             int totalsec = (int)Math.Floor(CurrentMidi.secondsLength);
@@ -306,7 +307,7 @@ namespace NoteCountRender
             //textEngine.Render(text, transform, Color4.White);
         }
 
-        public void SetTrackColors(NoteColor[][] trakcs)
+        public void ReloadTrackColors()
         {
 
         }
