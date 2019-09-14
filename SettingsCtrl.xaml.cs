@@ -58,6 +58,11 @@ Average NPS: {avgnps}";
             InitializeComponent();
             foreach (var font in System.Drawing.FontFamily.Families)
             {
+                try
+                {
+                    using (var f = new System.Drawing.Font(font.Name, 12)) { }
+                }
+                catch { continue; }
                 var dock = new DockPanel();
                 dock.Children.Add(new Label()
                 {

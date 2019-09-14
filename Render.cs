@@ -43,7 +43,7 @@ namespace NoteCountRender
 
         public bool ManualNoteDelete => true;
 
-        public int NoteCollectorOffset => 0;
+        public double NoteCollectorOffset => 0;
 
         public double Tempo { get; set; }
 
@@ -158,8 +158,10 @@ namespace NoteCountRender
 
             int seconds = (int)Math.Floor((double)frames / renderSettings.fps);
             int totalsec = (int)Math.Floor(CurrentMidi.secondsLength);
+            if (seconds > totalsec) seconds = totalsec;
             TimeSpan time = new TimeSpan(0, 0, seconds);
             TimeSpan totaltime = new TimeSpan(0, 0, totalsec);
+            if (time > totaltime) time = totaltime;
             if (!renderSettings.Paused) frames++;
 
             double barDivide = (double)CurrentMidi.division * CurrentMidi.timeSig.numerator / CurrentMidi.timeSig.denominator * 4;
@@ -169,6 +171,7 @@ namespace NoteCountRender
 
             long bar = (long)Math.Floor(limMidiTime / barDivide);
             long maxbar = (long)Math.Floor(CurrentMidi.tickLength / barDivide);
+            if (bar > maxbar) bar = maxbar;
 
             string text = settings.text;
             text = text.Replace("{bpm}", (Math.Round(tempo * 10) / 10).ToString());
