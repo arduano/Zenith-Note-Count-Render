@@ -23,5 +23,9 @@ namespace NoteCountRender
         public int fontSize = 40;
         public string fontName = "Arial";
         public System.Drawing.FontStyle fontStyle = System.Drawing.FontStyle.Regular;
+
+        public bool saveCsv = false;
+        public string csvOutput = "";
+        public string csvFormat = "{nps},{plph},{bpm},{nc}";
     }
 }

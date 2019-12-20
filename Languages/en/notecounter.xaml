@@ -17,4 +17,9 @@
 
     <system:String x:Key="reload">Reload</system:String>
     <system:String x:Key="noteTextPath">Location: Plugins/Assets/NoteCounter/Templates</system:String>
+
+    <system:String x:Key="savePath">Save Location</system:String>
+    <system:String x:Key="browse">Browse</system:String>
+    <system:String x:Key="saveToFile">Save frame data to .csv file</system:String>
+    <system:String x:Key="formatString">CSV line format</system:String>
 </ResourceDictionary>

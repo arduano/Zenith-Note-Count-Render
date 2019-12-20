@@ -15,6 +15,7 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using Path = System.IO.Path;
 using FontStyle = System.Drawing.FontStyle;
+using Microsoft.Win32;
 
 namespace NoteCountRender
 {
@@ -93,6 +94,8 @@ Average NPS: {avgnps}";
             }
             fontSize.Value = settings.fontSize;
             textTemplate.Text = settings.text;
+            saveCsv.IsChecked = settings.saveCsv;
+            csvFormat.Text = settings.csvFormat;
             initialised = true;
             UpdateFontStyles();
             Reload();
@@ -197,6 +200,30 @@ Average NPS: {avgnps}";
         private void Reload_Click(object sender, RoutedEventArgs e)
         {
             Reload();
+        }
+
+        private void saveCsv_Checked(object sender, RoutedEventArgs e)
+        {
+            if (!initialised) return;
+            settings.saveCsv = (bool)saveCsv.IsChecked;
+         }
+
+        private void browseOutputSaveButton_Click(object sender, RoutedEventArgs e)
+        {
+            var save = new SaveFileDialog();
+            save.OverwritePrompt = true;
+            save.Filter = "CSV date file (*.csv)|*.csv";
+            if ((bool)save.ShowDialog())
+            {
+                csvPath.Text = save.FileName;
+                settings.csvOutput = save.FileName;
+            }
+        }
+
+        private void csvFormat_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            if (!initialised) return; 
+            settings.csvFormat = csvFormat.Text;
         }
     }
 }
